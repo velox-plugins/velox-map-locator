@@ -1,0 +1,47 @@
+name: Feature request
+description: Suggest an improvement or new capability for Velox Map Locator
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement to Velox Map Locator.
+
+        Please describe the underlying use case as well as the feature you have in mind.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What problem would this feature solve?
+      placeholder: Describe the workflow or limitation you are trying to address.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe how you think the feature should work.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Are there other ways you currently handle this requirement?
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add examples, screenshots, references, or other useful information.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues to make sure this feature has not already been requested.
+          required: true

@@ -1,0 +1,80 @@
+name: Bug report
+description: Report a reproducible problem with Velox Map Locator
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem with Velox Map Locator.
+
+        Please provide enough information for us to reproduce and investigate the issue.
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Velox Map Locator version
+      placeholder: "Example: 1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: wordpress-version
+    attributes:
+      label: WordPress version
+      placeholder: "Example: 6.8"
+    validations:
+      required: true
+
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      placeholder: "Example: 8.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe what went wrong.
+      placeholder: Tell us what you observed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide the steps needed to reproduce the problem.
+      placeholder: |
+        1. Go to...
+        2. Configure...
+        3. Click...
+        4. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add screenshots, browser information, error messages, logs, or other relevant details.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues to make sure this problem has not already been reported.
+          required: true
+        - label: I can reproduce this issue consistently.
+          required: true
