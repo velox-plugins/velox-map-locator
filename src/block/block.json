@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "velox/map-locator",
+  "version": "1.0.0",
+  "title": "Velox Map Locator",
+  "category": "widgets",
+  "icon": "location-alt",
+  "description": "Display a configured Velox Map Locator.",
+  "textdomain": "velox-map-locator",
+  "attributes": {
+    "locatorId": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ]
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./editor.css"
+}

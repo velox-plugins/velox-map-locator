@@ -1,0 +1,11 @@
+Velox Map Locator — Changelog
+=============================
+
+1.0.0
+-----
+* Initial public release.
+* Added reusable Locations and Locators with Split, Map Only, and List Only layouts.
+* Added OpenStreetMap/Leaflet, Google Maps, and Custom XYZ basemap support.
+* Added synchronized map/list interaction, search, filters, Near Me, clustering, business hours, and map controls.
+* Added responsive and RTL-aware layouts, themes, Privacy Mode, Gutenberg block, shortcode, global Settings, CSV Import / Export, and built-in Help.
+* Added multisite-safe lifecycle handling and opt-in destructive uninstall cleanup that never deletes Media Library attachments.

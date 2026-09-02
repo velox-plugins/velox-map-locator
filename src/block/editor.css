@@ -1,0 +1,11 @@
+.vml-block-editor { border: 1px solid #dcdcde; border-radius: 10px; overflow: hidden; }
+.vml-block-editor__placeholder { align-items: center; display: flex; flex-direction: column; gap: 10px; justify-content: center; min-height: 220px; padding: 28px; text-align: center; }
+.vml-block-editor__placeholder .dashicons { color: #2563eb; font-size: 32px; height: 32px; width: 32px; }
+.vml-block-editor__placeholder strong { font-size: 18px; }
+.vml-block-editor__placeholder p { color: #646970; margin: 0; }
+.vml-block-editor__placeholder .components-base-control { max-width: 420px; text-align: left; width: 100%; }
+.vml-block-editor__loading { align-items: center; display: flex; gap: 8px; justify-content: center; min-height: 160px; }
+.vml-block-editor__bar { align-items: center; background: #f6f7f7; border-bottom: 1px solid #dcdcde; display: flex; justify-content: space-between; padding: 10px 14px; }
+.vml-block-editor__bar > div { display: grid; gap: 2px; }
+.vml-block-editor__bar span { color: #646970; font-size: 11px; }
+.vml-block-editor .vml-locator { margin: 0; }
