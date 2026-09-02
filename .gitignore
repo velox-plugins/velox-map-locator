@@ -1,0 +1,38 @@
+# ---------------------------------------------------------
+# Velox Plugins - Git Ignore
+# ---------------------------------------------------------
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE / editor settings
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Temporary / backup files
+*.tmp
+*.temp
+*.bak
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Node dependencies
+node_modules/
+
+# PHP testing/cache
+.phpunit.result.cache
+.phpunit.cache/
+
+# Generated archives
+*.zip
+*.tar
+*.tar.gz
