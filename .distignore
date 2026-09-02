@@ -1,0 +1,54 @@
+# ---------------------------------------------------------
+# Velox Plugins - Distribution Ignore
+# ---------------------------------------------------------
+#
+# Files listed here belong to the development repository
+# but should not be included in the distributable
+# WordPress plugin package.
+#
+
+# Git / GitHub
+.git
+.git/
+.github
+.github/
+.gitignore
+.gitattributes
+
+# Distribution configuration
+.distignore
+
+# GitHub-facing documentation
+README.md
+CONTRIBUTING.md
+SECURITY.md
+CODE_OF_CONDUCT.md
+
+# Development dependencies
+node_modules
+node_modules/
+
+# Tests and development tooling
+tests
+tests/
+.phpunit.result.cache
+.phpunit.cache
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# IDE / operating system files
+.idea
+.idea/
+.vscode
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Generated archives
+*.zip
+*.tar
+*.tar.gz
