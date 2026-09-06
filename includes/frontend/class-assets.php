@@ -23,12 +23,14 @@ final class Assets {
 
 	/** Register public assets without loading them globally. */
 	public static function register_assets() {
-		$css_path       = VELOX_MAP_LOCATOR_PATH . 'build/frontend.css';
-		$js_path        = VELOX_MAP_LOCATOR_PATH . 'build/frontend.js';
-		$map_js_path    = VELOX_MAP_LOCATOR_PATH . 'build/map-leaflet.js';
-		$google_map_js  = VELOX_MAP_LOCATOR_PATH . 'build/map-google.js';
-		$leaflet_js     = VELOX_MAP_LOCATOR_PATH . 'assets/vendor/leaflet/leaflet.min.js';
-		$leaflet_css    = VELOX_MAP_LOCATOR_PATH . 'assets/vendor/leaflet/leaflet.min.css';
+		$css_path        = VELOX_MAP_LOCATOR_PATH . 'build/frontend.css';
+		$js_path         = VELOX_MAP_LOCATOR_PATH . 'build/frontend.js';
+		$polish_css_path = VELOX_MAP_LOCATOR_PATH . 'build/frontend-1-1.css';
+		$polish_js_path  = VELOX_MAP_LOCATOR_PATH . 'build/frontend-1-1.js';
+		$map_js_path     = VELOX_MAP_LOCATOR_PATH . 'build/map-leaflet.js';
+		$google_map_js   = VELOX_MAP_LOCATOR_PATH . 'build/map-google.js';
+		$leaflet_js      = VELOX_MAP_LOCATOR_PATH . 'assets/vendor/leaflet/leaflet.min.js';
+		$leaflet_css     = VELOX_MAP_LOCATOR_PATH . 'assets/vendor/leaflet/leaflet.min.css';
 
 		wp_register_style(
 			'velomalo-frontend',
@@ -36,6 +38,15 @@ final class Assets {
 			array(),
 			file_exists( $css_path ) ? (string) filemtime( $css_path ) : VELOX_MAP_LOCATOR_VERSION
 		);
+
+		if ( file_exists( $polish_css_path ) && filesize( $polish_css_path ) > 0 ) {
+			wp_register_style(
+				'velomalo-frontend-1-1',
+				VELOX_MAP_LOCATOR_URL . 'build/frontend-1-1.css',
+				array( 'velomalo-frontend' ),
+				(string) filemtime( $polish_css_path )
+			);
+		}
 
 		if ( file_exists( $leaflet_css ) && filesize( $leaflet_css ) > 0 ) {
 			wp_register_style(
@@ -62,6 +73,16 @@ final class Assets {
 				VELOX_MAP_LOCATOR_URL . 'build/frontend.js',
 				array(),
 				(string) filemtime( $js_path ),
+				true
+			);
+		}
+
+		if ( file_exists( $polish_js_path ) && filesize( $polish_js_path ) > 0 ) {
+			wp_register_script(
+				'velomalo-frontend-1-1',
+				VELOX_MAP_LOCATOR_URL . 'build/frontend-1-1.js',
+				array( 'velomalo-frontend' ),
+				(string) filemtime( $polish_js_path ),
 				true
 			);
 		}
@@ -93,8 +114,14 @@ final class Assets {
 			self::register_assets();
 		}
 		wp_enqueue_style( 'velomalo-frontend' );
+		if ( wp_style_is( 'velomalo-frontend-1-1', 'registered' ) ) {
+			wp_enqueue_style( 'velomalo-frontend-1-1' );
+		}
 		if ( wp_script_is( 'velomalo-frontend', 'registered' ) ) {
 			wp_enqueue_script( 'velomalo-frontend' );
+		}
+		if ( wp_script_is( 'velomalo-frontend-1-1', 'registered' ) ) {
+			wp_enqueue_script( 'velomalo-frontend-1-1' );
 		}
 	}
 
