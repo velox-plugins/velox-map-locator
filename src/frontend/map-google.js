@@ -617,6 +617,10 @@
 		};
 		const loadButton = root.querySelector( '[data-vml-load-map]' );
 		if ( payload.map_load_mode === 'interaction' && loadButton ) {
+			if ( root.dataset.vmlInteractionApproved === 'true' ) {
+				load();
+				return;
+			}
 			loadButton.addEventListener( 'click', load, { once: true } );
 			return;
 		}

@@ -95,7 +95,7 @@ final class Renderer {
 		if ( $enqueue_assets ) {
 			Assets::enqueue();
 			if ( $map_enabled && $map_available ) {
-				Assets::enqueue_map( $provider_id );
+				Assets::enqueue_map( $provider_id, $privacy_mode );
 			}
 		}
 
@@ -553,6 +553,9 @@ final class Renderer {
 			/* translators: %s: Number of Locations sorted by distance. */
 			'sorted_distance'         => __( '%s sorted by distance.', 'velox-map-locator' ),
 			'locating'                => __( 'Locating…', 'velox-map-locator' ),
+			'loading_map'             => __( 'Loading map…', 'velox-map-locator' ),
+			'retry_map'               => __( 'Try again', 'velox-map-locator' ),
+			'map_load_failed'         => __( 'The map resources could not be loaded. Please try again.', 'velox-map-locator' ),
 			'geo_unavailable'         => __( 'Location services are not available in this browser.', 'velox-map-locator' ),
 			'geo_denied'              => __( 'Location access was not enabled. You can still search locations manually.', 'velox-map-locator' ),
 			'geo_failed'              => __( 'Your current location could not be determined. You can still search locations manually.', 'velox-map-locator' ),
