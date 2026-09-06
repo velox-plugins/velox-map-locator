@@ -6,8 +6,8 @@
 /* The global radius/shadow settings are now applied by the 1.1 presentation layer. */
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card,
 .vml-locator[data-vml11-enhanced="true"] .vml-locator__toolbar,
-.vml-locator[data-vml11-enhanced="true"] .vml-locator--split .vml-locator__body,
-.vml-locator[data-vml11-enhanced="true"] .vml-locator--map_only .vml-locator__body {
+.vml-locator[data-vml11-enhanced="true"].vml-locator--split .vml-locator__body,
+.vml-locator[data-vml11-enhanced="true"].vml-locator--map_only .vml-locator__body {
 	border-radius: var(--vml-radius, 10px);
 }
 
@@ -143,7 +143,7 @@
 	border-radius: 7px !important;
 }
 
-/* Automatic Type legend. */
+/* Automatic Type legend. It stays hidden until a real map engine has loaded. */
 .vml-locator[data-vml11-enhanced="true"] .vml-map-legend {
 	align-items: flex-start;
 	backdrop-filter: blur(8px);
@@ -160,6 +160,7 @@
 	right: 10px;
 	z-index: 640;
 }
+.vml-locator[data-vml11-enhanced="true"]:not(.vml-map-ready) .vml-map-legend { display: none !important; }
 .vml-locator[data-vml11-enhanced="true"] .vml-map-legend__item {
 	align-items: center;
 	color: #334155;
