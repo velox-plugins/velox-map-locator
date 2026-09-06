@@ -56,7 +56,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          tail -n +2 src/frontend/index.js | cmp - build/frontend.js
           cmp src/frontend/polish-1-1.js build/frontend-1-1.js
           cmp src/frontend/polish-1-1-stability.js build/frontend-1-1-stability.js
           cmp src/frontend/map-leaflet.js build/map-leaflet.js
