@@ -1,3 +1,4 @@
+# CI validates release-branch syntax, source/build parity and packaging.
 name: Plugin CI
 
 on:
