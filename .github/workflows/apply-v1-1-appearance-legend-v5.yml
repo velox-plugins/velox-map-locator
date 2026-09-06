@@ -1,0 +1,59 @@
+name: Apply 1.1 Semantic Legend and Typography v5
+
+on:
+  push:
+    branches:
+      - release/1.1.0
+    paths:
+      - '.github/workflows/apply-v1-1-appearance-legend-v5.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/1.1.0
+          fetch-depth: 0
+
+      - name: Apply corrected patch
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import textwrap
+
+          workflow = Path('.github/workflows/apply-v1-1-appearance-legend-v3.yml').read_text()
+          marker = "          python <<'PY'\n"
+          start = workflow.index(marker) + len(marker)
+          end = workflow.index("\n          PY", start)
+          script = textwrap.dedent(workflow[start:end])
+          script = script.replace('if count != 1:', 'if count < 1:')
+          exec(compile(script, 'appearance-legend-v5', 'exec'))
+          PY
+
+      - name: Validate modified files
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l includes/content/class-settings.php
+          php -l includes/services/class-locator-validator.php
+          php -l includes/services/class-public-locator-builder.php
+          node --check src/frontend/polish-1-1.js
+          node --check src/admin/index.js
+          cmp src/frontend/polish-1-1.js build/frontend-1-1.js
+          cmp src/styles/frontend-1-1.scss build/frontend-1-1.css
+          tail -n +2 src/admin/index.js | cmp - build/admin.js
+
+      - name: Commit plugin changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Amar Saleem'
+          git config user.email 'amarsaleem.sync@gmail.com'
+          git add includes/content/class-settings.php includes/services/class-locator-validator.php includes/services/class-public-locator-builder.php src/frontend/polish-1-1.js build/frontend-1-1.js src/styles/frontend-1-1.scss build/frontend-1-1.css src/admin/index.js build/admin.js
+          git commit -m 'Add semantic Type legend and typography controls'
+          git push origin HEAD:release/1.1.0
