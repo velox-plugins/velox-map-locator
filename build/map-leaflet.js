@@ -190,7 +190,7 @@
 				fit.className = 'vml-map-tool';
 				fit.setAttribute( 'aria-label', strings.map_fit_all_label || 'Fit visible locations in the map' );
 				fit.title = strings.map_fit_all || 'Fit All';
-				fit.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg>';
+				fit.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v6M9 6l3 3 3-3M12 21v-6M9 18l3-3 3 3M3 12h6M6 9l3 3-3 3M21 12h-6M18 9l-3 3 3 3"/></svg>';
 				fit.addEventListener( 'click', () => this.fitVisible( true ) );
 				tools.appendChild( fit );
 			}
