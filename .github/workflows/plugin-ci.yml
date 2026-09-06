@@ -58,3 +58,53 @@ jobs:
           set -euo pipefail
           cmp src/frontend/polish-1-1.js build/frontend-1-1.js
           cmp src/frontend/polish-1-1-stability.js build/frontend-1-1-stability.js
+
+  package:
+    name: Build development ZIP
+    runs-on: ubuntu-latest
+    needs: syntax
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Assemble distribution directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/velox-map-locator
+          rsync -a \
+            --exclude='dist/' \
+            --exclude-from='.distignore' \
+            ./ dist/velox-map-locator/
+
+      - name: Verify package structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dist/velox-map-locator/velox-map-locator.php
+          test -f dist/velox-map-locator/readme.txt
+          test -f dist/velox-map-locator/build/frontend.js
+          test -f dist/velox-map-locator/build/frontend-1-1.js
+          test -f dist/velox-map-locator/build/frontend-1-1-stability.js
+          test -f dist/velox-map-locator/build/frontend-1-1.css
+          test ! -e dist/velox-map-locator/.git
+          test ! -e dist/velox-map-locator/.github
+          test ! -e dist/velox-map-locator/node_modules
+
+      - name: Create ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          zip -rq ../velox-map-locator-1.1.0-dev.zip velox-map-locator
+          cd ..
+          unzip -t velox-map-locator-1.1.0-dev.zip
+
+      - name: Upload development package
+        uses: actions/upload-artifact@v4
+        with:
+          name: velox-map-locator-1.1.0-dev
+          path: velox-map-locator-1.1.0-dev.zip
+          if-no-files-found: error
+          retention-days: 14
