@@ -52,12 +52,15 @@ jobs:
             node --check "$file"
           done < <(find src build -type f -name '*.js' -print0)
 
-      - name: Verify 1.1 source/build parity
+      - name: Verify source/build parity
         shell: bash
         run: |
           set -euo pipefail
           cmp src/frontend/polish-1-1.js build/frontend-1-1.js
           cmp src/frontend/polish-1-1-stability.js build/frontend-1-1-stability.js
+          cmp src/frontend/map-leaflet.js build/map-leaflet.js
+          cmp src/frontend/map-google.js build/map-google.js
+          tail -n +2 src/admin/index.js | cmp - build/admin.js
 
   package:
     name: Build development ZIP
