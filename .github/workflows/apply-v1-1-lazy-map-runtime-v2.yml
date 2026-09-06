@@ -1,0 +1,46 @@
+name: Apply 1.1 Lazy Map Runtime v2
+
+on:
+  push:
+    branches:
+      - release/1.1.0
+    paths:
+      - '.github/workflows/apply-v1-1-lazy-map-runtime-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/1.1.0
+          fetch-depth: 0
+
+      - name: Apply lazy runtime patch
+        run: python .github/scripts/apply-v1-1-lazy-map-runtime.py
+
+      - name: Validate changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l includes/frontend/class-assets.php
+          php -l includes/frontend/class-renderer.php
+          node --check src/frontend/lazy-map-runtime.js
+          node --check src/frontend/map-leaflet.js
+          node --check src/frontend/map-google.js
+          cmp src/frontend/lazy-map-runtime.js build/lazy-map-runtime.js
+          cmp src/frontend/map-leaflet.js build/map-leaflet.js
+          cmp src/frontend/map-google.js build/map-google.js
+
+      - name: Commit plugin changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Amar Saleem'
+          git config user.email 'amarsaleem.sync@gmail.com'
+          git add includes/frontend/class-assets.php includes/frontend/class-renderer.php src/frontend/lazy-map-runtime.js build/lazy-map-runtime.js src/frontend/map-leaflet.js build/map-leaflet.js src/frontend/map-google.js build/map-google.js .github/workflows/plugin-ci.yml
+          git commit -m 'Defer map runtime until privacy gate approval'
+          git push origin HEAD:release/1.1.0
