@@ -88,7 +88,7 @@ final class Settings {
 				'home_control'           => true,
 				'fit_control'            => true,
 				'zoom_controls'          => true,
-				'zoom_level_control'     => true,
+				'zoom_level_control'     => false,
 				'scale_control'          => true,
 				'fullscreen'             => true,
 				'scroll_zoom'            => false,
