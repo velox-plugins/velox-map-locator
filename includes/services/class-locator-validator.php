@@ -109,11 +109,12 @@ final class Locator_Validator {
 				'show_result_count' => true,
 			),
 			'appearance'     => array(
-				'theme'      => (string) $general['default_theme'],
-				'mode'       => (string) $general['default_colour_mode'],
-				'typography' => (string) $general['default_typography'],
-				'density'    => (string) $appearance_defaults['density'],
-				'accent'     => (string) $appearance_defaults['accent'],
+				'theme'        => (string) $general['default_theme'],
+				'mode'         => (string) $general['default_colour_mode'],
+				'typography'   => (string) $general['default_typography'],
+				'density'      => (string) $appearance_defaults['density'],
+				'accent'       => (string) $appearance_defaults['accent'],
+				'card_padding' => array_key_exists( 'card_padding', $appearance_defaults ) && null !== $appearance_defaults['card_padding'] ? (int) $appearance_defaults['card_padding'] : null,
 			),
 			'behaviour'      => array(
 				'near_me'              => true,
@@ -331,6 +332,13 @@ final class Locator_Validator {
 			if ( array_key_exists( 'accent', $appearance ) ) {
 				$accent = is_scalar( $appearance['accent'] ) ? sanitize_hex_color( (string) $appearance['accent'] ) : false;
 				$config['appearance']['accent'] = $accent ? $accent : '';
+			}
+			if ( array_key_exists( 'card_padding', $appearance ) ) {
+				if ( null === $appearance['card_padding'] || '' === $appearance['card_padding'] ) {
+					$config['appearance']['card_padding'] = null;
+				} else {
+					$config['appearance']['card_padding'] = max( 0, min( 48, absint( $appearance['card_padding'] ) ) );
+				}
 			}
 		}
 

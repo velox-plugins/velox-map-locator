@@ -243,6 +243,13 @@
 		};
 		root.style.setProperty( '--vml-shadow', shadows[ appearance.shadow ] || shadows.soft );
 
+		if ( appearance.card_padding !== null && appearance.card_padding !== undefined && appearance.card_padding !== '' ) {
+			const cardPadding = Math.max( 0, Math.min( 48, Number( appearance.card_padding ) || 0 ) );
+			root.style.setProperty( '--vml-card-padding', `${ cardPadding }px` );
+		} else {
+			root.style.removeProperty( '--vml-card-padding' );
+		}
+
 		const accent = parseHex( appearance.accent );
 		if ( accent ) {
 			const accentLuminance = luminance( accent );

@@ -13,8 +13,8 @@
 
 /* Denser directory cards: more locations remain visible without turning the list into a wall of controls. */
 .vml-locator[data-vml11-enhanced="true"] .vml-locator__list { gap: 12px; }
-.vml-locator[data-vml11-enhanced="true"] .vml-location-card__body { padding: 15px 16px; }
-.vml-locator[data-vml11-enhanced="true"].vml-locator--split .vml-location-card__body { padding: 13px 14px; }
+.vml-locator[data-vml11-enhanced="true"] .vml-location-card__body { padding: var(--vml-card-padding, 15px 16px); }
+.vml-locator[data-vml11-enhanced="true"].vml-locator--split .vml-location-card__body { padding: var(--vml-card-padding, 13px 14px); }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__heading { gap: 6px 9px; }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__heading h3 {
 	font-size: .98rem;
@@ -89,12 +89,18 @@
 	padding: 8px 12px;
 	white-space: nowrap;
 }
+/* Selected filters always use a clear white foreground on the accent background. */
+.vml-locator[data-vml11-enhanced="true"] .vml-locator__pills button.is-selected,
+.vml-locator[data-vml11-enhanced="true"] .vml-locator__open-now.is-selected,
+.vml-locator[data-vml11-enhanced="true"] .vml-locator__near.is-selected {
+	color: #fff !important;
+}
 .vml-locator[data-vml11-enhanced="true"] .vml-locator__open-now:hover,
 .vml-locator[data-vml11-enhanced="true"] .vml-locator__open-now.is-selected,
 .vml-locator[data-vml11-enhanced="true"] .vml-locator__near.is-selected {
 	background: var(--vml-accent) !important;
 	border-color: var(--vml-accent) !important;
-	color: var(--vml-accent-contrast) !important;
+	color: #fff !important;
 }
 .vml-locator[data-vml11-enhanced="true"] .vml-locator__open-now:focus-visible,
 .vml-locator[data-vml11-enhanced="true"] .vml-locator__near:focus-visible,

@@ -95,10 +95,11 @@ final class Settings {
 				'refit_on_filter'        => true,
 			),
 			'appearance'       => array(
-				'radius'  => 10,
-				'density' => 'comfortable',
-				'shadow'  => 'soft',
-				'accent'  => '#2563eb',
+				'radius'       => 10,
+				'density'      => 'comfortable',
+				'shadow'       => 'soft',
+				'accent'       => '#2563eb',
+				'card_padding' => null,
 			),
 			'admin_interface'  => array(
 				'appearance' => 'system',
@@ -163,6 +164,11 @@ final class Settings {
 		$output['appearance']['density'] = self::allow_value( $appearance, 'density', array( 'compact', 'comfortable', 'spacious' ), $defaults['appearance']['density'] );
 		$output['appearance']['shadow']  = self::allow_value( $appearance, 'shadow', array( 'none', 'soft', 'medium' ), $defaults['appearance']['shadow'] );
 		$output['appearance']['accent']  = isset( $appearance['accent'] ) ? sanitize_hex_color( $appearance['accent'] ) : $defaults['appearance']['accent'];
+		if ( array_key_exists( 'card_padding', $appearance ) && null !== $appearance['card_padding'] && '' !== $appearance['card_padding'] ) {
+			$output['appearance']['card_padding'] = max( 0, min( 48, absint( $appearance['card_padding'] ) ) );
+		} else {
+			$output['appearance']['card_padding'] = $defaults['appearance']['card_padding'];
+		}
 
 		if ( empty( $output['appearance']['accent'] ) ) {
 			$output['appearance']['accent'] = $defaults['appearance']['accent'];
