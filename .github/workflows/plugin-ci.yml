@@ -1,4 +1,3 @@
-# CI validates release-branch syntax, source/build parity and packaging.
 name: Plugin CI
 
 on:
@@ -61,6 +60,7 @@ jobs:
           cmp src/frontend/polish-1-1-stability.js build/frontend-1-1-stability.js
           cmp src/frontend/map-leaflet.js build/map-leaflet.js
           cmp src/frontend/map-google.js build/map-google.js
+          cmp src/styles/frontend-1-1.scss build/frontend-1-1.css
           tail -n +2 src/admin/index.js | cmp - build/admin.js
 
   package:
