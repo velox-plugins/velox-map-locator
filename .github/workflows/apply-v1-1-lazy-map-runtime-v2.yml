@@ -39,8 +39,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          git restore .github/workflows/plugin-ci.yml
           git config user.name 'Amar Saleem'
           git config user.email 'amarsaleem.sync@gmail.com'
-          git add includes/frontend/class-assets.php includes/frontend/class-renderer.php src/frontend/lazy-map-runtime.js build/lazy-map-runtime.js src/frontend/map-leaflet.js build/map-leaflet.js src/frontend/map-google.js build/map-google.js .github/workflows/plugin-ci.yml
+          git add includes/frontend/class-assets.php includes/frontend/class-renderer.php src/frontend/lazy-map-runtime.js build/lazy-map-runtime.js src/frontend/map-leaflet.js build/map-leaflet.js src/frontend/map-google.js build/map-google.js
           git commit -m 'Defer map runtime until privacy gate approval'
           git push origin HEAD:release/1.1.0
