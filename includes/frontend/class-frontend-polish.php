@@ -37,8 +37,8 @@ final class Frontend_Polish {
 	public static function filter_config( $config, $locator_id ) {
 		$config = is_array( $config ) ? $config : array();
 
-		$stored   = get_option( Settings::OPTION_SETTINGS, Settings::defaults() );
-		$settings = Settings::sanitize_settings( is_array( $stored ) ? $stored : array() );
+		$stored     = get_option( Settings::OPTION_SETTINGS, Settings::defaults() );
+		$settings   = Settings::sanitize_settings( is_array( $stored ) ? $stored : array() );
 		$appearance = isset( $settings['appearance'] ) && is_array( $settings['appearance'] ) ? $settings['appearance'] : Settings::defaults()['appearance'];
 
 		if ( ! isset( $config['appearance'] ) || ! is_array( $config['appearance'] ) ) {
@@ -86,10 +86,7 @@ final class Frontend_Polish {
 			}
 		}
 
-		$locale = determine_locale();
-		if ( ! is_string( $locale ) || '' === $locale ) {
-			$locale = get_locale();
-		}
+		$locale = get_locale();
 
 		$config['presentation'] = array(
 			'locale'             => (string) $locale,
@@ -99,17 +96,18 @@ final class Frontend_Polish {
 			'provider_host'      => $service_host,
 			'locator_id'         => absint( $locator_id ),
 			'strings'            => array(
-				'privacy_title'       => __( 'Map not loaded yet', 'velox-map-locator' ),
-				'privacy_body'        => __( 'The location directory works without contacting the map provider. No map request has been made yet.', 'velox-map-locator' ),
+				'privacy_title'      => __( 'Map not loaded yet', 'velox-map-locator' ),
+				'privacy_body'       => __( 'The location directory works without contacting the map provider. No map request has been made yet.', 'velox-map-locator' ),
 				/* translators: %s: External map provider name. */
-				'privacy_provider'    => __( 'Loading this map will connect your browser to %s.', 'velox-map-locator' ),
-				'load_map'            => __( 'Load interactive map', 'velox-map-locator' ),
-				'sorted_by_distance'  => __( '%s sorted by distance', 'velox-map-locator' ),
-				'near_me'             => __( 'Near Me', 'velox-map-locator' ),
-				'open_now'            => __( 'Open now', 'velox-map-locator' ),
-				'location_one'        => __( '1 location', 'velox-map-locator' ),
+				'privacy_provider'   => __( 'Loading this map will connect your browser to %s.', 'velox-map-locator' ),
+				'load_map'           => __( 'Load interactive map', 'velox-map-locator' ),
+				'sorted_by_distance' => __( '%s sorted by distance', 'velox-map-locator' ),
+				'near_me'            => __( 'Near Me', 'velox-map-locator' ),
+				'open_now'           => __( 'Open now', 'velox-map-locator' ),
+				'map_legend'         => __( 'Map legend', 'velox-map-locator' ),
+				'location_one'       => __( '1 location', 'velox-map-locator' ),
 				/* translators: %d: Number of Locations. */
-				'locations_many'      => __( '%d locations', 'velox-map-locator' ),
+				'locations_many'     => __( '%d locations', 'velox-map-locator' ),
 			),
 		);
 
@@ -128,7 +126,7 @@ final class Frontend_Polish {
 	 * @return array<string,mixed>
 	 */
 	public static function filter_location( $output, $location_id, $locator_id ) {
-		$output = is_array( $output ) ? $output : array();
+		$output      = is_array( $output ) ? $output : array();
 		$location_id = absint( $location_id );
 
 		$postcode = get_post_meta( $location_id, '_velomalo_postal_code', true );
@@ -136,18 +134,17 @@ final class Frontend_Polish {
 			$output['postal_code'] = sanitize_text_field( (string) $postcode );
 		}
 
-		if ( empty( $output['types'] ) ) {
-			$primary_type_id = absint( get_post_meta( $location_id, '_velomalo_primary_type_id', true ) );
-			if ( $primary_type_id ) {
-				$term = get_term( $primary_type_id, Taxonomies::TYPE );
-				if ( $term && ! is_wp_error( $term ) ) {
-					$output['types'] = array(
-						array(
-							'id'   => (int) $term->term_id,
-							'name' => $term->name,
-							'slug' => $term->slug,
-						),
-					);
+		$primary_type_id = absint( get_post_meta( $location_id, '_velomalo_primary_type_id', true ) );
+		if ( $primary_type_id ) {
+			$term = get_term( $primary_type_id, Taxonomies::TYPE );
+			if ( $term && ! is_wp_error( $term ) ) {
+				$output['primary_type'] = array(
+					'id'   => (int) $term->term_id,
+					'name' => $term->name,
+					'slug' => $term->slug,
+				);
+				if ( empty( $output['types'] ) ) {
+					$output['types'] = array( $output['primary_type'] );
 				}
 			}
 		}
