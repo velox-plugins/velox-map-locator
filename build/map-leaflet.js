@@ -190,7 +190,7 @@
 				fit.className = 'vml-map-tool';
 				fit.setAttribute( 'aria-label', strings.map_fit_all_label || 'Fit visible locations in the map' );
 				fit.title = strings.map_fit_all || 'Fit All';
-				fit.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H4v4"/><path d="M16 4h4v4"/><path d="M20 16v4h-4"/><path d="M4 16v4h4"/></svg>';
+				fit.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v6M9 6l3 3 3-3M12 21v-6M9 18l3-3 3 3M3 12h6M6 9l3 3-3 3M21 12h-6M18 9l-3 3 3 3"/></svg>';
 				fit.addEventListener( 'click', () => this.fitVisible( true ) );
 				tools.appendChild( fit );
 			}
@@ -544,6 +544,10 @@
 		};
 		const loadButton = root.querySelector( '[data-vml-load-map]' );
 		if ( payload.map_load_mode === 'interaction' && loadButton ) {
+			if ( root.dataset.vmlInteractionApproved === 'true' ) {
+				load();
+				return;
+			}
 			loadButton.addEventListener( 'click', load, { once: true } );
 			return;
 		}

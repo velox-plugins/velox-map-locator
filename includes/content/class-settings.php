@@ -88,17 +88,26 @@ final class Settings {
 				'home_control'           => true,
 				'fit_control'            => true,
 				'zoom_controls'          => true,
-				'zoom_level_control'     => true,
+				'zoom_level_control'     => false,
 				'scale_control'          => true,
 				'fullscreen'             => true,
 				'scroll_zoom'            => false,
 				'refit_on_filter'        => true,
 			),
 			'appearance'       => array(
-				'radius'  => 10,
-				'density' => 'comfortable',
-				'shadow'  => 'soft',
-				'accent'  => '#2563eb',
+				'radius'       => 10,
+				'density'      => 'comfortable',
+				'shadow'       => 'soft',
+				'accent'       => '#2563eb',
+				'card_padding'       => null,
+				'card_title_size'    => null,
+				'card_title_weight'  => null,
+				'card_text_size'     => null,
+				'card_text_weight'   => null,
+				'popup_title_size'   => null,
+				'popup_title_weight' => null,
+				'popup_text_size'    => null,
+				'popup_text_weight'  => null,
 			),
 			'admin_interface'  => array(
 				'appearance' => 'system',
@@ -163,6 +172,21 @@ final class Settings {
 		$output['appearance']['density'] = self::allow_value( $appearance, 'density', array( 'compact', 'comfortable', 'spacious' ), $defaults['appearance']['density'] );
 		$output['appearance']['shadow']  = self::allow_value( $appearance, 'shadow', array( 'none', 'soft', 'medium' ), $defaults['appearance']['shadow'] );
 		$output['appearance']['accent']  = isset( $appearance['accent'] ) ? sanitize_hex_color( $appearance['accent'] ) : $defaults['appearance']['accent'];
+		if ( array_key_exists( 'card_padding', $appearance ) && null !== $appearance['card_padding'] && '' !== $appearance['card_padding'] ) {
+			$output['appearance']['card_padding'] = max( 0, min( 48, absint( $appearance['card_padding'] ) ) );
+		} else {
+			$output['appearance']['card_padding'] = $defaults['appearance']['card_padding'];
+		}
+		foreach ( array( 'card_title_size', 'card_text_size', 'popup_title_size', 'popup_text_size' ) as $size_key ) {
+			$output['appearance'][ $size_key ] = array_key_exists( $size_key, $appearance ) && null !== $appearance[ $size_key ] && '' !== $appearance[ $size_key ]
+				? max( 10, min( 30, absint( $appearance[ $size_key ] ) ) )
+				: $defaults['appearance'][ $size_key ];
+		}
+		foreach ( array( 'card_title_weight', 'card_text_weight', 'popup_title_weight', 'popup_text_weight' ) as $weight_key ) {
+			$output['appearance'][ $weight_key ] = array_key_exists( $weight_key, $appearance ) && null !== $appearance[ $weight_key ] && '' !== $appearance[ $weight_key ]
+				? max( 300, min( 800, absint( $appearance[ $weight_key ] ) ) )
+				: $defaults['appearance'][ $weight_key ];
+		}
 
 		if ( empty( $output['appearance']['accent'] ) ) {
 			$output['appearance']['accent'] = $defaults['appearance']['accent'];

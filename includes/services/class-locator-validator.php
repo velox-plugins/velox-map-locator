@@ -109,11 +109,20 @@ final class Locator_Validator {
 				'show_result_count' => true,
 			),
 			'appearance'     => array(
-				'theme'      => (string) $general['default_theme'],
-				'mode'       => (string) $general['default_colour_mode'],
-				'typography' => (string) $general['default_typography'],
-				'density'    => (string) $appearance_defaults['density'],
-				'accent'     => (string) $appearance_defaults['accent'],
+				'theme'        => (string) $general['default_theme'],
+				'mode'         => (string) $general['default_colour_mode'],
+				'typography'   => (string) $general['default_typography'],
+				'density'      => (string) $appearance_defaults['density'],
+				'accent'       => (string) $appearance_defaults['accent'],
+				'card_padding'       => array_key_exists( 'card_padding', $appearance_defaults ) && null !== $appearance_defaults['card_padding'] ? (int) $appearance_defaults['card_padding'] : null,
+				'card_title_size'    => array_key_exists( 'card_title_size', $appearance_defaults ) && null !== $appearance_defaults['card_title_size'] ? (int) $appearance_defaults['card_title_size'] : null,
+				'card_title_weight'  => array_key_exists( 'card_title_weight', $appearance_defaults ) && null !== $appearance_defaults['card_title_weight'] ? (int) $appearance_defaults['card_title_weight'] : null,
+				'card_text_size'     => array_key_exists( 'card_text_size', $appearance_defaults ) && null !== $appearance_defaults['card_text_size'] ? (int) $appearance_defaults['card_text_size'] : null,
+				'card_text_weight'   => array_key_exists( 'card_text_weight', $appearance_defaults ) && null !== $appearance_defaults['card_text_weight'] ? (int) $appearance_defaults['card_text_weight'] : null,
+				'popup_title_size'   => array_key_exists( 'popup_title_size', $appearance_defaults ) && null !== $appearance_defaults['popup_title_size'] ? (int) $appearance_defaults['popup_title_size'] : null,
+				'popup_title_weight' => array_key_exists( 'popup_title_weight', $appearance_defaults ) && null !== $appearance_defaults['popup_title_weight'] ? (int) $appearance_defaults['popup_title_weight'] : null,
+				'popup_text_size'    => array_key_exists( 'popup_text_size', $appearance_defaults ) && null !== $appearance_defaults['popup_text_size'] ? (int) $appearance_defaults['popup_text_size'] : null,
+				'popup_text_weight'  => array_key_exists( 'popup_text_weight', $appearance_defaults ) && null !== $appearance_defaults['popup_text_weight'] ? (int) $appearance_defaults['popup_text_weight'] : null,
 			),
 			'behaviour'      => array(
 				'near_me'              => true,
@@ -331,6 +340,23 @@ final class Locator_Validator {
 			if ( array_key_exists( 'accent', $appearance ) ) {
 				$accent = is_scalar( $appearance['accent'] ) ? sanitize_hex_color( (string) $appearance['accent'] ) : false;
 				$config['appearance']['accent'] = $accent ? $accent : '';
+			}
+			if ( array_key_exists( 'card_padding', $appearance ) ) {
+				if ( null === $appearance['card_padding'] || '' === $appearance['card_padding'] ) {
+					$config['appearance']['card_padding'] = null;
+				} else {
+					$config['appearance']['card_padding'] = max( 0, min( 48, absint( $appearance['card_padding'] ) ) );
+				}
+			}
+			foreach ( array( 'card_title_size', 'card_text_size', 'popup_title_size', 'popup_text_size' ) as $size_key ) {
+				if ( array_key_exists( $size_key, $appearance ) ) {
+					$config['appearance'][ $size_key ] = null === $appearance[ $size_key ] || '' === $appearance[ $size_key ] ? null : max( 10, min( 30, absint( $appearance[ $size_key ] ) ) );
+				}
+			}
+			foreach ( array( 'card_title_weight', 'card_text_weight', 'popup_title_weight', 'popup_text_weight' ) as $weight_key ) {
+				if ( array_key_exists( $weight_key, $appearance ) ) {
+					$config['appearance'][ $weight_key ] = null === $appearance[ $weight_key ] || '' === $appearance[ $weight_key ] ? null : max( 300, min( 800, absint( $appearance[ $weight_key ] ) ) );
+				}
 			}
 		}
 

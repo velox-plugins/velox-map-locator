@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Velox Map Locator
  * Description:       Build polished, reusable location directories and interactive map locators for WordPress.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.6
  * Requires PHP:      7.4
  * Author:            Velox Plugins
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'VELOX_MAP_LOCATOR_VERSION', '1.0.0' );
+define( 'VELOX_MAP_LOCATOR_VERSION', '1.1.0' );
 define( 'VELOX_MAP_LOCATOR_DATA_VERSION', 3 );
 define( 'VELOX_MAP_LOCATOR_FILE', __FILE__ );
 define( 'VELOX_MAP_LOCATOR_PATH', plugin_dir_path( __FILE__ ) );
@@ -31,6 +31,7 @@ register_deactivation_hook( VELOX_MAP_LOCATOR_FILE, array( 'VeloxPlugins\\VeloxM
 add_action(
 	'plugins_loaded',
 	static function () {
+		VeloxPlugins\VeloxMapLocator\Frontend\Frontend_Polish::register();
 		VeloxPlugins\VeloxMapLocator\Plugin::instance()->run();
 	}
 );
