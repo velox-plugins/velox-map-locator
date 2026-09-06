@@ -99,7 +99,15 @@ final class Settings {
 				'density'      => 'comfortable',
 				'shadow'       => 'soft',
 				'accent'       => '#2563eb',
-				'card_padding' => null,
+				'card_padding'       => null,
+				'card_title_size'    => null,
+				'card_title_weight'  => null,
+				'card_text_size'     => null,
+				'card_text_weight'   => null,
+				'popup_title_size'   => null,
+				'popup_title_weight' => null,
+				'popup_text_size'    => null,
+				'popup_text_weight'  => null,
 			),
 			'admin_interface'  => array(
 				'appearance' => 'system',
@@ -168,6 +176,16 @@ final class Settings {
 			$output['appearance']['card_padding'] = max( 0, min( 48, absint( $appearance['card_padding'] ) ) );
 		} else {
 			$output['appearance']['card_padding'] = $defaults['appearance']['card_padding'];
+		}
+		foreach ( array( 'card_title_size', 'card_text_size', 'popup_title_size', 'popup_text_size' ) as $size_key ) {
+			$output['appearance'][ $size_key ] = array_key_exists( $size_key, $appearance ) && null !== $appearance[ $size_key ] && '' !== $appearance[ $size_key ]
+				? max( 10, min( 30, absint( $appearance[ $size_key ] ) ) )
+				: $defaults['appearance'][ $size_key ];
+		}
+		foreach ( array( 'card_title_weight', 'card_text_weight', 'popup_title_weight', 'popup_text_weight' ) as $weight_key ) {
+			$output['appearance'][ $weight_key ] = array_key_exists( $weight_key, $appearance ) && null !== $appearance[ $weight_key ] && '' !== $appearance[ $weight_key ]
+				? max( 300, min( 800, absint( $appearance[ $weight_key ] ) ) )
+				: $defaults['appearance'][ $weight_key ];
 		}
 
 		if ( empty( $output['appearance']['accent'] ) ) {

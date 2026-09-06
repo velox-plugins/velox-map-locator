@@ -250,6 +250,17 @@
 			root.style.removeProperty( '--vml-card-padding' );
 		}
 
+		const sizeVars = { card_title_size: '--vml-card-title-size', card_text_size: '--vml-card-text-size', popup_title_size: '--vml-popup-title-size', popup_text_size: '--vml-popup-text-size' };
+		Object.entries( sizeVars ).forEach( ( [ key, cssVar ] ) => {
+			if ( appearance[ key ] !== null && appearance[ key ] !== undefined && appearance[ key ] !== '' ) root.style.setProperty( cssVar, `${ Math.max( 10, Math.min( 30, Number( appearance[ key ] ) || 10 ) ) }px` );
+			else root.style.removeProperty( cssVar );
+		} );
+		const weightVars = { card_title_weight: '--vml-card-title-weight', card_text_weight: '--vml-card-text-weight', popup_title_weight: '--vml-popup-title-weight', popup_text_weight: '--vml-popup-text-weight' };
+		Object.entries( weightVars ).forEach( ( [ key, cssVar ] ) => {
+			if ( appearance[ key ] !== null && appearance[ key ] !== undefined && appearance[ key ] !== '' ) root.style.setProperty( cssVar, String( Math.max( 300, Math.min( 800, Number( appearance[ key ] ) || 400 ) ) ) );
+			else root.style.removeProperty( cssVar );
+		} );
+
 		const accent = parseHex( appearance.accent );
 		if ( accent ) {
 			const accentLuminance = luminance( accent );
@@ -293,7 +304,7 @@
 				location._search = `${ location._search || '' } ${ normalize( location.postal_code ) }`.trim();
 			}
 
-			const type = Array.isArray( location.types ) && location.types[ 0 ] ? location.types[ 0 ] : null;
+			const type = location.primary_type || ( Array.isArray( location.types ) && location.types[ 0 ] ? location.types[ 0 ] : null );
 			const heading = card.querySelector( '.vml-location-card__heading' );
 			if ( type && type.name && heading && ! heading.querySelector( '.vml-location-card__type' ) ) {
 				const badge = document.createElement( 'span' );
@@ -445,14 +456,17 @@
 		if ( ! pane || pane.querySelector( '[data-vml-map-legend]' ) ) return;
 		const entries = new Map();
 		controller.locations.forEach( ( location ) => {
-			const type = Array.isArray( location.types ) && location.types[ 0 ] ? location.types[ 0 ] : null;
+			const type = location.primary_type || null;
 			if ( ! type || ! type.name ) return;
-			const color = location.marker && location.marker.color ? location.marker.color : '#2563eb';
+			const marker = type.marker || {};
 			const key = String( type.id || type.slug || type.name );
-			if ( ! entries.has( key ) ) entries.set( key, { name: type.name, color } );
+			if ( ! entries.has( key ) ) entries.set( key, { name: type.name, color: marker.color || '#2563eb', icon: marker.icon || 'pin', iconColor: marker.icon_color || '#ffffff' } );
 		} );
-		if ( entries.size < 2 || entries.size > 8 ) return;
 
+		const visualStyles = new Set( Array.from( entries.values() ).map( ( entry ) => `${ entry.color }|${ entry.icon }|${ entry.iconColor }` ) );
+		if ( entries.size < 2 || entries.size > 8 || visualStyles.size < 2 ) return;
+
+		const glyphs = { pin: '•', office: 'O', store: 'S', building: 'B', 'shopping-bag': 'S', warehouse: 'W', service: 'S', tools: 'T', clinic: '+', education: 'E', restaurant: 'R', atm: '$', dealer: 'D', star: '★' };
 		const legend = document.createElement( 'div' );
 		legend.className = 'vml-map-legend';
 		legend.dataset.vmlMapLegend = 'true';
@@ -463,6 +477,8 @@
 			const swatch = document.createElement( 'span' );
 			swatch.className = 'vml-map-legend__swatch';
 			swatch.style.backgroundColor = entry.color;
+			swatch.style.color = entry.iconColor;
+			swatch.textContent = glyphs[ entry.icon ] || '•';
 			swatch.setAttribute( 'aria-hidden', 'true' );
 			const label = document.createElement( 'span' );
 			label.textContent = entry.name;

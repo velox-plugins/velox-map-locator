@@ -1368,6 +1368,20 @@
 						h( 'div', { className: 'vml-field-grid two' },
 							h( ColorField, { label: __( 'Accent Colour', 'velox-map-locator' ), value: appearance.accent || '#2563eb', onChange: ( value ) => updateConfig( 'appearance.accent', value ) } ),
 							h( Field, { label: __( 'Card Padding', 'velox-map-locator' ), hint: __( '0–48 px. Leave blank to use the current theme default spacing.', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 0, max: 48, value: appearance.card_padding ?? '', placeholder: __( 'Theme default', 'velox-map-locator' ), onChange: ( event ) => updateConfig( 'appearance.card_padding', event.target.value === '' ? null : Number( event.target.value ) ) } ) )
+						),
+						h( 'div', { className: 'vml-builder-subhead' }, h( 'strong', null, __( 'Card Typography', 'velox-map-locator' ) ), h( 'span', null, __( 'Leave blank to keep the current Velox defaults.', 'velox-map-locator' ) ) ),
+						h( 'div', { className: 'vml-field-grid two' },
+							h( Field, { label: __( 'Card Title Size', 'velox-map-locator' ), hint: '10–30 px' }, h( 'input', { type: 'number', min: 10, max: 30, value: appearance.card_title_size ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => updateConfig( 'appearance.card_title_size', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+							h( Field, { label: __( 'Card Title Weight', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 300, max: 800, step: 50, value: appearance.card_title_weight ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => updateConfig( 'appearance.card_title_weight', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+							h( Field, { label: __( 'Card Text Size', 'velox-map-locator' ), hint: '10–30 px' }, h( 'input', { type: 'number', min: 10, max: 30, value: appearance.card_text_size ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => updateConfig( 'appearance.card_text_size', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+							h( Field, { label: __( 'Card Text Weight', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 300, max: 800, step: 50, value: appearance.card_text_weight ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => updateConfig( 'appearance.card_text_weight', e.target.value === '' ? null : Number( e.target.value ) ) } ) )
+						),
+						h( 'div', { className: 'vml-builder-subhead' }, h( 'strong', null, __( 'Map Popup Typography', 'velox-map-locator' ) ), h( 'span', null, __( 'Optional title and body typography for map popups.', 'velox-map-locator' ) ) ),
+						h( 'div', { className: 'vml-field-grid two' },
+							h( Field, { label: __( 'Popup Title Size', 'velox-map-locator' ), hint: '10–30 px' }, h( 'input', { type: 'number', min: 10, max: 30, value: appearance.popup_title_size ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => updateConfig( 'appearance.popup_title_size', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+							h( Field, { label: __( 'Popup Title Weight', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 300, max: 800, step: 50, value: appearance.popup_title_weight ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => updateConfig( 'appearance.popup_title_weight', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+							h( Field, { label: __( 'Popup Text Size', 'velox-map-locator' ), hint: '10–30 px' }, h( 'input', { type: 'number', min: 10, max: 30, value: appearance.popup_text_size ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => updateConfig( 'appearance.popup_text_size', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+							h( Field, { label: __( 'Popup Text Weight', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 300, max: 800, step: 50, value: appearance.popup_text_weight ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => updateConfig( 'appearance.popup_text_weight', e.target.value === '' ? null : Number( e.target.value ) ) } ) )
 						)
 					),
 					h( BuilderSection, { id: 'behaviour', title: __( 'Behaviour', 'velox-map-locator' ), description: __( 'Control location selection, distance and deep linking.', 'velox-map-locator' ), active: activeSection === 'behaviour', onActivate: () => setActiveSection( 'behaviour' ) },
@@ -2036,7 +2050,7 @@
 			[ __( 'Shortcode', 'velox-map-locator' ), __( 'The [velox_map_locator id="123"] embed syntax used where WordPress shortcodes are supported.', 'velox-map-locator' ) ],
 			[ __( 'Attribution', 'velox-map-locator' ), __( 'Required acknowledgement text/links for a map data or tile provider. Do not remove attribution required by the selected service.', 'velox-map-locator' ) ],
 			[ __( 'Refit on Filter', 'velox-map-locator' ), __( 'A map behaviour that recalculates the viewport after search/filter changes so the visible result markers remain framed.', 'velox-map-locator' ) ],
-			[ __( 'Distance Unit: Auto', 'velox-map-locator' ), __( 'Lets Velox choose kilometres or miles based on visitor locale rather than forcing one unit for every visitor.', 'velox-map-locator' ) ],
+			[ __( 'Distance Unit: Auto', 'velox-map-locator' ), __( 'Lets Velox choose kilometres or miles from the WordPress site locale rather than forcing one unit for every site.', 'velox-map-locator' ) ],
 		];
 
 		const searchText = ( value ) => String( value || '' ).toLocaleLowerCase();
@@ -2174,6 +2188,20 @@
 					h( 'div', { className: 'vml-field-grid two' },
 						h( ColorField, { label: __( 'Default Accent Colour', 'velox-map-locator' ), value: appearance.accent || '#2563eb', onChange: ( value ) => update( 'appearance.accent', value ) } ),
 						h( Field, { label: __( 'Default Card Padding', 'velox-map-locator' ), hint: __( '0–48 px. Leave blank to keep the current theme default for new Locators.', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 0, max: 48, value: appearance.card_padding ?? '', placeholder: __( 'Theme default', 'velox-map-locator' ), onChange: ( event ) => update( 'appearance.card_padding', event.target.value === '' ? null : Number( event.target.value ) ) } ) )
+					),
+					h( 'div', { className: 'vml-builder-subhead' }, h( 'strong', null, __( 'Default Card Typography', 'velox-map-locator' ) ), h( 'span', null, __( 'Optional defaults for newly created Locators.', 'velox-map-locator' ) ) ),
+					h( 'div', { className: 'vml-field-grid two' },
+						h( Field, { label: __( 'Card Title Size', 'velox-map-locator' ), hint: '10–30 px' }, h( 'input', { type: 'number', min: 10, max: 30, value: appearance.card_title_size ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => update( 'appearance.card_title_size', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+						h( Field, { label: __( 'Card Title Weight', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 300, max: 800, step: 50, value: appearance.card_title_weight ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => update( 'appearance.card_title_weight', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+						h( Field, { label: __( 'Card Text Size', 'velox-map-locator' ), hint: '10–30 px' }, h( 'input', { type: 'number', min: 10, max: 30, value: appearance.card_text_size ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => update( 'appearance.card_text_size', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+						h( Field, { label: __( 'Card Text Weight', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 300, max: 800, step: 50, value: appearance.card_text_weight ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => update( 'appearance.card_text_weight', e.target.value === '' ? null : Number( e.target.value ) ) } ) )
+					),
+					h( 'div', { className: 'vml-builder-subhead' }, h( 'strong', null, __( 'Default Popup Typography', 'velox-map-locator' ) ), h( 'span', null, __( 'Optional defaults for newly created Locator map popups.', 'velox-map-locator' ) ) ),
+					h( 'div', { className: 'vml-field-grid two' },
+						h( Field, { label: __( 'Popup Title Size', 'velox-map-locator' ), hint: '10–30 px' }, h( 'input', { type: 'number', min: 10, max: 30, value: appearance.popup_title_size ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => update( 'appearance.popup_title_size', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+						h( Field, { label: __( 'Popup Title Weight', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 300, max: 800, step: 50, value: appearance.popup_title_weight ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => update( 'appearance.popup_title_weight', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+						h( Field, { label: __( 'Popup Text Size', 'velox-map-locator' ), hint: '10–30 px' }, h( 'input', { type: 'number', min: 10, max: 30, value: appearance.popup_text_size ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => update( 'appearance.popup_text_size', e.target.value === '' ? null : Number( e.target.value ) ) } ) ),
+						h( Field, { label: __( 'Popup Text Weight', 'velox-map-locator' ) }, h( 'input', { type: 'number', min: 300, max: 800, step: 50, value: appearance.popup_text_weight ?? '', placeholder: __( 'Default', 'velox-map-locator' ), onChange: ( e ) => update( 'appearance.popup_text_weight', e.target.value === '' ? null : Number( e.target.value ) ) } ) )
 					)
 				),
 				h( 'section', { className: 'vml-panel vml-settings-panel' },

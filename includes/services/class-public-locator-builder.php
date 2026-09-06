@@ -87,6 +87,13 @@ final class Public_Locator_Builder {
 			$output['latitude']  = isset( $address['latitude'] ) ? $address['latitude'] : null;
 			$output['longitude'] = isset( $address['longitude'] ) ? $address['longitude'] : null;
 			$output['marker']    = $this->resolve_marker( $data );
+			$primary_type_id     = isset( $data['primary_type_id'] ) ? absint( $data['primary_type_id'] ) : 0;
+			if ( $primary_type_id ) {
+				$primary_type = $this->primary_type_data( $primary_type_id );
+				if ( $primary_type ) {
+					$output['primary_type'] = $primary_type;
+				}
+			}
 		}
 
 		if ( in_array( 'address', $needed, true ) ) {
@@ -179,6 +186,24 @@ final class Public_Locator_Builder {
 			}
 		}
 		return implode( ', ', $parts );
+	}
+
+	/** Return public-safe Primary Type marker semantics for the map legend. */
+	private function primary_type_data( $id ) {
+		$term = get_term( absint( $id ), Taxonomies::TYPE );
+		if ( ! $term || is_wp_error( $term ) ) {
+			return array();
+		}
+		return array(
+			'id'     => (int) $term->term_id,
+			'name'   => $term->name,
+			'slug'   => $term->slug,
+			'marker' => array(
+				'icon'       => (string) get_term_meta( $term->term_id, '_velomalo_marker_icon', true ) ?: 'pin',
+				'color'      => (string) get_term_meta( $term->term_id, '_velomalo_marker_color', true ) ?: '#2563eb',
+				'icon_color' => (string) get_term_meta( $term->term_id, '_velomalo_marker_icon_color', true ) ?: '#ffffff',
+			),
+		);
 	}
 
 	/** Resolve marker inheritance. */

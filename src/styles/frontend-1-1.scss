@@ -17,8 +17,8 @@
 .vml-locator[data-vml11-enhanced="true"].vml-locator--split .vml-location-card__body { padding: var(--vml-card-padding, 13px 14px); }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__heading { gap: 6px 9px; }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__heading h3 {
-	font-size: .98rem;
-	font-weight: 650;
+	font-size: var(--vml-card-title-size, .98rem);
+	font-weight: var(--vml-card-title-weight, 650);
 	line-height: 1.28;
 }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__type {
@@ -26,7 +26,8 @@
 	padding: 2px 7px;
 }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__address {
-	font-size: .84rem;
+	font-size: var(--vml-card-text-size, .84rem);
+	font-weight: var(--vml-card-text-weight, 400);
 	line-height: 1.4;
 	margin-top: 5px;
 }
@@ -38,6 +39,12 @@
 }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__status.is-neutral { color: var(--vml-status-neutral); }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__details { margin-top: 10px; }
+.vml-locator[data-vml11-enhanced="true"] .vml-location-card__details,
+.vml-locator[data-vml11-enhanced="true"] .vml-location-card__hours,
+.vml-locator[data-vml11-enhanced="true"] .vml-location-card__extra {
+	font-size: var(--vml-card-text-size, inherit);
+	font-weight: var(--vml-card-text-weight, inherit);
+}
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__hours,
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__extra { margin-top: 11px; padding-top: 10px; }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__actions { margin-top: 10px; }
@@ -46,7 +53,7 @@
 	border: 0 !important;
 	border-radius: 0;
 	color: var(--vml-accent) !important;
-	font-size: .82rem;
+	font-size: var(--vml-card-text-size, .82rem);
 	font-weight: 700;
 	min-height: 28px;
 	padding: 2px 0;
@@ -55,6 +62,17 @@
 	text-underline-offset: 3px;
 }
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card__directions:hover { filter: none; text-decoration-thickness: 2px !important; }
+
+.vml-locator[data-vml11-enhanced="true"] .vml-map-popup__title {
+	font-size: var(--vml-popup-title-size, .98rem);
+	font-weight: var(--vml-popup-title-weight, 700);
+}
+.vml-locator[data-vml11-enhanced="true"] .vml-map-popup__address,
+.vml-locator[data-vml11-enhanced="true"] .vml-map-popup__link,
+.vml-locator[data-vml11-enhanced="true"] .vml-map-popup__button {
+	font-size: var(--vml-popup-text-size, .84rem);
+	font-weight: var(--vml-popup-text-weight, 400);
+}
 
 /* Strong card-level keyboard focus for cards that control a map marker. */
 .vml-locator[data-vml11-enhanced="true"] .vml-location-card[tabindex="0"]:focus-visible {
@@ -180,8 +198,14 @@
 	border: 1px solid rgb(15 23 42 / 18%);
 	border-radius: 50%;
 	flex: 0 0 auto;
-	height: 9px;
-	width: 9px;
+	align-items: center;
+	display: inline-flex;
+	font-size: 8px;
+	font-weight: 800;
+	height: 16px;
+	justify-content: center;
+	line-height: 1;
+	width: 16px;
 }
 
 .vml-locator[data-vml11-enhanced="true"][data-vml-mode="dark"] .vml-map-legend {
