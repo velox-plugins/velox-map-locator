@@ -2,6 +2,9 @@
 ( function () {
 	'use strict';
 
+	const DAY_NAMES = [ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday' ];
+	const CLOSING_SOON_MINUTES = 60;
+
 	function normalize( value ) {
 		return String( value || '' )
 			.normalize( 'NFD' )
@@ -11,13 +14,195 @@
 			.trim();
 	}
 
-	function formatTemplate( template, value ) {
-		return String( template || '' ).replace( /%1\$[sd]|%[sd]/, String( value ) );
+	function toArray( value ) {
+		return Array.isArray( value ) ? value : [];
+	}
+
+	function formatTemplate( template, ...values ) {
+		let output = String( template || '' );
+		values.forEach( ( value, index ) => {
+			const numbered = new RegExp( `%${ index + 1 }\\$[sd]` );
+			if ( numbered.test( output ) ) output = output.replace( numbered, String( value ) );
+			else output = output.replace( /%[sd]/, String( value ) );
+		} );
+		return output;
 	}
 
 	function locationCountLabel( count, strings ) {
 		if ( count === 1 ) return strings.location_one || '1 location';
 		return formatTemplate( strings.locations_many || '%d locations', count );
+	}
+
+	function partsInTimezone( timezone, date = new Date() ) {
+		if ( ! timezone ) return null;
+		try {
+			const formatter = new Intl.DateTimeFormat( 'en-CA', {
+				timeZone: timezone,
+				year: 'numeric', month: '2-digit', day: '2-digit',
+				weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+			} );
+			const values = {};
+			formatter.formatToParts( date ).forEach( ( part ) => {
+				if ( part.type !== 'literal' ) values[ part.type ] = part.value;
+			} );
+			return {
+				year: Number( values.year ),
+				month: Number( values.month ),
+				day: Number( values.day ),
+				weekday: String( values.weekday || '' ).toLocaleLowerCase(),
+				hour: Number( values.hour ),
+				minute: Number( values.minute ),
+				dateKey: `${ values.year }-${ values.month }-${ values.day }`,
+			};
+		} catch ( error ) {
+			return null;
+		}
+	}
+
+	function dateDescriptor( parts, offset ) {
+		const anchor = Date.UTC( parts.year, parts.month - 1, parts.day );
+		const shifted = new Date( anchor + ( offset * 86400000 ) );
+		const year = shifted.getUTCFullYear();
+		const month = String( shifted.getUTCMonth() + 1 ).padStart( 2, '0' );
+		const day = String( shifted.getUTCDate() ).padStart( 2, '0' );
+		return {
+			dateKey: `${ year }-${ month }-${ day }`,
+			weekday: DAY_NAMES[ shifted.getUTCDay() ],
+		};
+	}
+
+	function minutes( value ) {
+		const match = /^(\d{2}):(\d{2})$/.exec( String( value || '' ) );
+		return match ? ( Number( match[ 1 ] ) * 60 ) + Number( match[ 2 ] ) : null;
+	}
+
+	function dayHours( location, descriptor ) {
+		const special = toArray( location.special_hours ).find( ( entry ) => entry && entry.date === descriptor.dateKey );
+		if ( special ) return special;
+		const weekly = location.weekly_hours && typeof location.weekly_hours === 'object' ? location.weekly_hours : {};
+		return weekly[ descriptor.weekday ] || null;
+	}
+
+	function formatWpClock( value, timeFormat ) {
+		const parsed = minutes( value );
+		if ( parsed === null ) return value || '';
+		const hour24 = Math.floor( parsed / 60 );
+		const minute = parsed % 60;
+		const hour12 = hour24 % 12 || 12;
+		const tokens = {
+			H: String( hour24 ).padStart( 2, '0' ),
+			G: String( hour24 ),
+			h: String( hour12 ).padStart( 2, '0' ),
+			g: String( hour12 ),
+			i: String( minute ).padStart( 2, '0' ),
+			s: '00',
+			a: hour24 < 12 ? 'am' : 'pm',
+			A: hour24 < 12 ? 'AM' : 'PM',
+		};
+		const format = String( timeFormat || 'g:i a' );
+		let output = '';
+		let escaped = false;
+		for ( const character of format ) {
+			if ( escaped ) {
+				output += character;
+				escaped = false;
+				continue;
+			}
+			if ( character === '\\' ) {
+				escaped = true;
+				continue;
+			}
+			output += Object.prototype.hasOwnProperty.call( tokens, character ) ? tokens[ character ] : character;
+		}
+		return output;
+	}
+
+	function humanWeekday( day, strings = {} ) {
+		return strings.weekdays && strings.weekdays[ day ] ? strings.weekdays[ day ] : ( day ? day.charAt( 0 ).toUpperCase() + day.slice( 1 ) : '' );
+	}
+
+	function liveHoursStatus( location, strings = {}, timeFormat = 'g:i a', now = new Date() ) {
+		const operational = location.operational || {};
+		if ( operational.status && operational.status !== 'normal' ) {
+			return {
+				state: operational.status === 'coming_soon' ? 'info' : 'warning',
+				label: operational.label || ( operational.status === 'coming_soon' ? ( strings.coming_soon || 'Coming Soon' ) : ( strings.temporarily_closed || 'Temporarily Closed' ) ),
+			};
+		}
+
+		const hasWeekly = location.weekly_hours && typeof location.weekly_hours === 'object' && Object.keys( location.weekly_hours ).length > 0;
+		const hasSpecial = Array.isArray( location.special_hours ) && location.special_hours.length > 0;
+		if ( ! location.timezone || ( ! hasWeekly && ! hasSpecial ) ) return null;
+
+		const parts = partsInTimezone( location.timezone, now );
+		if ( ! parts ) return null;
+		const currentMinutes = ( parts.hour * 60 ) + parts.minute;
+		const today = dateDescriptor( parts, 0 );
+		const yesterday = dateDescriptor( parts, -1 );
+		const todayHours = dayHours( location, today );
+		const yesterdayHours = dayHours( location, yesterday );
+
+		if ( yesterdayHours && ! yesterdayHours.closed && ! yesterdayHours.all_day ) {
+			for ( const interval of toArray( yesterdayHours.intervals ) ) {
+				const open = minutes( interval.open );
+				const close = minutes( interval.close );
+				if ( open !== null && close !== null && close <= open && currentMinutes < close ) {
+					const remaining = close - currentMinutes;
+					const time = formatWpClock( interval.close, timeFormat );
+					return remaining <= CLOSING_SOON_MINUTES
+						? { state: 'warning', label: formatTemplate( strings.closing_soon || 'Closing soon · %s', time ) }
+						: { state: 'success', label: formatTemplate( strings.open_closes || 'Open · Closes %s', time ) };
+				}
+			}
+		}
+
+		if ( todayHours && todayHours.all_day ) return { state: 'success', label: strings.open_24 || 'Open 24 Hours' };
+		if ( todayHours && ! todayHours.closed ) {
+			for ( const interval of toArray( todayHours.intervals ) ) {
+				const open = minutes( interval.open );
+				const close = minutes( interval.close );
+				if ( open === null || close === null ) continue;
+				if ( close > open && currentMinutes >= open && currentMinutes < close ) {
+					const remaining = close - currentMinutes;
+					const time = formatWpClock( interval.close, timeFormat );
+					return remaining <= CLOSING_SOON_MINUTES
+						? { state: 'warning', label: formatTemplate( strings.closing_soon || 'Closing soon · %s', time ) }
+						: { state: 'success', label: formatTemplate( strings.open_closes || 'Open · Closes %s', time ) };
+				}
+				if ( close <= open && currentMinutes >= open ) {
+					const remaining = ( 24 * 60 - currentMinutes ) + close;
+					const time = formatWpClock( interval.close, timeFormat );
+					return remaining <= CLOSING_SOON_MINUTES
+						? { state: 'warning', label: formatTemplate( strings.closing_soon || 'Closing soon · %s', time ) }
+						: { state: 'success', label: formatTemplate( strings.open_closes || 'Open · Closes %s', time ) };
+				}
+			}
+		}
+
+		for ( let offset = 0; offset <= 7; offset += 1 ) {
+			const descriptor = dateDescriptor( parts, offset );
+			const candidate = dayHours( location, descriptor );
+			if ( ! candidate || candidate.closed ) continue;
+			if ( candidate.all_day ) {
+				if ( offset === 0 ) return { state: 'success', label: strings.open_24 || 'Open 24 Hours' };
+				return {
+					state: 'neutral',
+					label: offset === 1
+						? ( strings.closed_opens_tomorrow_allday || 'Closed · Opens tomorrow' )
+						: formatTemplate( strings.closed_opens_day_allday || 'Closed · Opens %s', humanWeekday( descriptor.weekday, strings ) ),
+				};
+			}
+			for ( const interval of toArray( candidate.intervals ) ) {
+				const open = minutes( interval.open );
+				if ( open === null || ( offset === 0 && open <= currentMinutes ) ) continue;
+				const time = formatWpClock( interval.open, timeFormat );
+				if ( offset === 0 ) return { state: 'neutral', label: formatTemplate( strings.closed_opens || 'Closed · Opens %s', time ) };
+				if ( offset === 1 ) return { state: 'neutral', label: formatTemplate( strings.closed_opens_tomorrow || 'Closed · Opens tomorrow %s', time ) };
+				return { state: 'neutral', label: formatTemplate( strings.closed_opens_day || 'Closed · Opens %1$s %2$s', humanWeekday( descriptor.weekday, strings ), time ) };
+			}
+		}
+
+		return { state: 'neutral', label: strings.closed || 'Closed' };
 	}
 
 	function parseHex( value ) {
@@ -171,6 +356,26 @@
 		syncNearMeState( button, controller );
 	}
 
+	function enhanceTimeFormat( controller, config ) {
+		if ( controller.vml11TimeFormatEnhanced ) return;
+		controller.vml11TimeFormatEnhanced = true;
+		const timeFormat = config.presentation && config.presentation.time_format ? config.presentation.time_format : 'g:i a';
+		controller.updateLiveStatuses = function () {
+			this.locations.forEach( ( location ) => {
+				const status = liveHoursStatus( location, this.strings || {}, timeFormat );
+				const card = this.cardById && this.cardById.get( Number( location.id ) );
+				const node = card && card.querySelector( '[data-vml-live-status]' );
+				if ( ! node || ! status ) return;
+				node.hidden = false;
+				node.classList.remove( 'is-success', 'is-warning', 'is-info', 'is-neutral' );
+				node.classList.add( `is-${ status.state || 'neutral' }` );
+				const label = node.querySelector( '[data-vml-status-label]' );
+				if ( label ) label.textContent = status.label;
+			} );
+		};
+		controller.updateLiveStatuses();
+	}
+
 	function enhanceOpenNow( root, controller, config ) {
 		if ( controller.vml11OpenNowEnhanced ) return;
 		const supportsHours = controller.locations.some( ( location ) => location && location.timezone && location.weekly_hours && Object.keys( location.weekly_hours ).length );
@@ -291,6 +496,7 @@
 		enhanceCards( root, controller );
 		enhanceResultCount( controller, config );
 		enhanceNearMe( root, controller, config );
+		enhanceTimeFormat( controller, config );
 		enhanceOpenNow( root, controller, config );
 		enhanceFullscreenIcon( root );
 		buildLegend( root, controller );
