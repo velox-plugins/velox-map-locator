@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset name="Velox Map Locator">
+	<description>WordPress coding standards for Velox Map Locator Core.</description>
+	<file>velox-map-locator.php</file>
+	<file>uninstall.php</file>
+	<file>includes</file>
+	<exclude-pattern>build/*</exclude-pattern>
+	<exclude-pattern>assets/vendor/*</exclude-pattern>
+	<exclude-pattern>node_modules/*</exclude-pattern>
+	<exclude-pattern>vendor/*</exclude-pattern>
+	<arg name="extensions" value="php"/>
+	<arg value="ps"/>
+	<rule ref="WordPress"/>
+</ruleset>
