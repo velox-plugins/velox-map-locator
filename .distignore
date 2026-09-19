@@ -52,3 +52,19 @@ Desktop.ini
 *.zip
 *.tar
 *.tar.gz
+
+# Core development workspace
+package.json
+package-lock.json
+webpack.config.js
+composer.json
+composer.lock
+phpunit.xml.dist
+phpcs.xml.dist
+.nvmrc
+DEVELOPMENT.md
+WORKSPACE-MANIFEST.md
+tests
+tests/
+vendor
+vendor/
