@@ -1,0 +1,25 @@
+{
+  "name": "velox-map-locator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Development workspace for the Velox Map Locator WordPress plugin.",
+  "license": "GPL-2.0-or-later",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "format": "wp-scripts format",
+    "lint:js": "wp-scripts lint-js src tests/js webpack.config.js",
+    "lint:css": "wp-scripts lint-style \"src/**/*.{css,scss}\"",
+    "test:js": "wp-scripts test-unit-js",
+    "test:php": "composer test",
+    "test": "npm run test:js && npm run test:php",
+    "plugin-zip": "wp-scripts plugin-zip"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "35.0.0"
+  }
+}
