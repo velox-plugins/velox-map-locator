@@ -36,3 +36,8 @@ node_modules/
 *.zip
 *.tar
 *.tar.gz
+
+# Composer dependencies and local test cache
+vendor/
+.phpunit.result.cache
+.phpunit.cache/
